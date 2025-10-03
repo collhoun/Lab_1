@@ -1,5 +1,4 @@
-from src.power import power_function
-from src.constants import SAMPLE_CONSTANT
+from src.calculator import calculate
 
 
 def main() -> None:
@@ -8,13 +7,16 @@ def main() -> None:
     :return: Данная функция ничего не возвращает
     """
 
-    target, degree = map(int, input("Введите два числа разделенные пробелом: ").split(" "))
+    calculated_expression = ''
+    while calculated_expression != 'quit':
+        calculated_expression = input(
+            "Введите выражение, результат которого вы хотите узнать (для завершения введите quit): ")
+        try:
+            result = calculate(calculated_expression)
+            print(result)
+        except ValueError as e:
+            print(e)
 
-    result = power_function(target=target, power=degree)
-
-    print(result)
-
-    print(SAMPLE_CONSTANT)
 
 if __name__ == "__main__":
     main()
