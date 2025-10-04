@@ -179,7 +179,7 @@ def calculate(expr):
 
 
 if __name__ == '__main__':
-    expr = '9.0//2.2'
+    expr = '*'
     print(tokenization(expr))
     print(make_rpn(tokenization(expr)))
     print(count_rpn(make_rpn(tokenization(expr))))
