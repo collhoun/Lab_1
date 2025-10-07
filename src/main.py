@@ -16,6 +16,10 @@ def main() -> None:
             print(result)
         except ValueError as e:
             print(e)
+        except ZeroDivisionError as zero:
+            print(zero)
+        except TypeError as t:
+            print(t)
 
 
 if __name__ == "__main__":

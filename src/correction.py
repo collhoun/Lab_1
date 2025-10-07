@@ -16,30 +16,52 @@ def check_expression_correction(expr: str) -> bool:
 
     if expr.count('(') != expr.count(')'):
         return False
-    return True
+    return check_brackets_position(expr)
 
 
-def check_operation_correction(num1: float | int, num2: float | int, operation: str) -> tuple:
-    """
+def check_brackets_position(expr: str) -> bool:
+    """checking if brackets stand in right order
 
     Args:
-        num1 (float | int): first number
-        num2 (float | int): second number
-        operation (str): operation between number1 and number2
+        expr (str): calculated expression
 
     Returns:
-        tuple: returns a tuple of (bool, Exseption) to share information
+        bool: True if expr is correct else False
     """
-    if operation in ['/', '%', '//'] and num2 == 0:
-        return False, ZeroDivisionError
+    cnt_open_bracket = 0
+    cnt_close_bracket = 0
 
-    elif operation in ['%', '//'] and (num1 != int(num1) or num2 != int(num2)):
-        return False, TypeError
+    for i in expr:
+        if cnt_close_bracket > cnt_open_bracket:
+            return False
+        if i == '(':
+            cnt_open_bracket += 1
+        if i == ')':
+            cnt_close_bracket += 1
 
-    if operation == '^' and num1 == num2 == 0:
-        return False, ValueError
+    return True
 
-    return True, Exception
+    # def check_operation_correction(num1: float | int, num2: float | int, operation: str) -> tuple:
+    #     """
+
+    #     Args:
+    #         num1 (float | int): first number
+    #         num2 (float | int): second number
+    #         operation (str): operation between number1 and number2
+
+    #     Returns:
+    #         tuple: returns a tuple of (bool, Exseption) to share information
+    #     """
+    #     if operation in ['/', '%', '//'] and num2 == 0:  # поправить здесь
+    #         return False, ZeroDivisionError
+
+    #     elif operation in ['%', '//'] and (num1 != int(num1) or num2 != int(num2)):
+    #         return False, TypeError
+
+    #     if operation == '^' and num1 == num2 == 0:
+    #         return False, ValueError
+
+    #     return True, Exception
 
 
 def do_bad_tokens() -> list:

@@ -1,6 +1,6 @@
 
-from src.constants import ACCEPTABLE_OPERATORS, PRIORITY_OF_OPERANDS, OPERATIONS_WITH_NUMBERS, EXSEPTIONS_DESCRIPTIONS
-from src.correction import check_expression_correction, check_operation_correction
+from src.constants import ACCEPTABLE_OPERATORS, PRIORITY_OF_OPERANDS, OPERATIONS_WITH_NUMBERS
+from src.correction import check_expression_correction
 
 
 def tokenization(expr: str) -> list:
@@ -45,11 +45,17 @@ def tokenization(expr: str) -> list:
 
         else:
             raise ValueError(f'Неизвестный символ {expr[ind]}')
-    if current_token and current_token.count('.') <= 1:
-        tokens.append(current_token)
-    elif current_token and current_token.count('.') > 1:
-        raise ValueError(
-            f'Неверный ввод числа с плавающей точкой: {current_token}')
+    if current_token:
+        if current_token.count('.') > 1:
+            raise ValueError(
+                f'Неверный ввод числа с плавающей точкой: {current_token}')
+        else:
+            tokens.append(current_token)
+    # if current_token and current_token.count('.') <= 1:  # поправить здесь
+    #     tokens.append(current_token)
+    # elif current_token and current_token.count('.') > 1:
+    #     raise ValueError(
+    #         f'Неверный ввод числа с плавающей точкой: {current_token}')
 
     for i, value in enumerate(tokens):
         if value == '@':
@@ -119,13 +125,27 @@ def count_rpn(expr: list) -> float:
         elif len(stack) > 1:
             num1 = float(stack.pop(-1))
             num2 = float(stack.pop(-1))
-            check_operation = check_operation_correction(num2, num1, char)
-            if check_operation[0]:
+            try:
                 answer = do_operation(num1, num2, char)
                 stack.append(answer)
-            else:
-                raise check_operation[1](
-                    EXSEPTIONS_DESCRIPTIONS[check_operation[1]](num1, num2, char))
+            except ValueError:
+                raise ValueError(
+                    f'Деление {char} на нуль: {int(num2) if int(num2) == num2 else num2} и {int(num1) if int(num1) == num1 else num1}')
+            except ZeroDivisionError:
+                raise ZeroDivisionError(
+                    f'Невозможно вычислить результат операции {char} для данных типов {int(num2) if int(num2) == num2 else num2} и {int(num1) if int(num1) == num1 else num1}')
+            except TypeError:
+                raise TypeError(
+                    f'Некорректная операция {char} для операндов {int(num2) if int(num2) == num2 else num2} и {int(num1) if int(num1) == num1 else num1}')
+
+            # check_operation = check_operation_correction(num2, num1, char)
+            # if check_operation[0]:
+            #     answer = do_operation(num1, num2, char)
+            #     stack.append(answer)
+            # else:
+            #     raise check_operation[1](
+            #         # поправить здесь
+            #         EXSEPTIONS_DESCRIPTIONS[check_operation[1]](num1, num2, char))
 
     return int(answer) if int(answer) == answer else answer
 
@@ -179,7 +199,7 @@ def calculate(expr):
 
 
 if __name__ == '__main__':
-    expr = '*'
+    expr = '7*(8+3)'
     print(tokenization(expr))
     print(make_rpn(tokenization(expr)))
     print(count_rpn(make_rpn(tokenization(expr))))
